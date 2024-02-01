@@ -1,0 +1,59 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Provider {
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  calendars Calendar[]
+}
+
+model Calendar {
+  id         String      @id @default(cuid())
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  account    Account?    @relation(fields: [accountId], references: [id])
+  accountId  String?
+  provider   Provider?   @relation(fields: [providerId], references: [id])
+  providerId String?
+  schedule   Schedule?   @relation(fields: [scheduleId], references: [id])
+  scheduleId String?
+  syncLogs   SyncLog[]
+  syncTokens SyncToken[]
+}
+
+model SyncToken {
+  id         String    @id @default(cuid())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  calendar   Calendar? @relation(fields: [calendarId], references: [id])
+  calendarId String?
+}
+
+model SyncLog {
+  id         String    @id @default(cuid())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  calendar   Calendar? @relation(fields: [calendarId], references: [id])
+  calendarId String?
+}
+
+model Schedule {
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  calendars Calendar[]
+}
+
+model Account {
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  calendars Calendar[]
+}
